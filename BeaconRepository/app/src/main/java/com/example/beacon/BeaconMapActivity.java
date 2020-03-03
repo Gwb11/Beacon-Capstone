@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class LocatrActivity extends SingleFragmentActivity {
+public class BeaconMapActivity extends SingleFragmentActivity {
     private static final int REQUEST_ERROR = 0;
 
     @Override
     protected Fragment createFragment() {
-        return LocatrFragment.newInstance();
+        return BeaconMapFragment.newInstance();
     }
 
     @Override
