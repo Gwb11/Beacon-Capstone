@@ -11,6 +11,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class LocatorActivity extends SingleFragmentActivity {
     private static final int REQUEST_ERROR = 0;
+
     @Override
     protected Fragment createFragment() {
             return LocatorFragment.newInstance();

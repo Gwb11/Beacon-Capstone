@@ -1,48 +1,37 @@
 package com.example.beacon;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
+import com.example.beacon.Models.Beacon;
+import com.example.beacon.Models.BeaconLab;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.Calendar;
+
 
 public class LocatorFragment extends SupportMapFragment {
     private static final String TAG = "LocatorFragment";
@@ -68,6 +57,7 @@ public class LocatorFragment extends SupportMapFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        Log.d(TAG, "onCreate");
 
         mClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -95,6 +85,7 @@ public class LocatorFragment extends SupportMapFragment {
 
     @Override
     public void onStart() {
+        Log.d(TAG, "onStart");
         super.onStart();
         getActivity().invalidateOptionsMenu();
 
@@ -103,6 +94,7 @@ public class LocatorFragment extends SupportMapFragment {
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
 
         mClient.disconnect();
     }
@@ -110,6 +102,7 @@ public class LocatorFragment extends SupportMapFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        Log.d(TAG, "onCreateOptionsMenu");
         inflater.inflate(R.menu.fragment_locator, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_locate);
@@ -118,29 +111,44 @@ public class LocatorFragment extends SupportMapFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
+
         switch (item.getItemId()) {
             case R.id.action_locate:
-                //findImage();
+
                 if (hasLocationPermission()) {
                     getDeviceLocation();
 
                     mMap.setMyLocationEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-                    Toast.makeText(getActivity(), "Showing current location", Toast.LENGTH_SHORT).show();
+                    Beacon beacon = new Beacon();
+                    beacon.setDate(Calendar.getInstance().getTime());
+                    BeaconLab.get(getActivity()).addBeacon(beacon);
+                    Log.d(TAG, "Beacon Added");
+
+                    Intent intent = BeaconActivity.newIntent(getActivity(), beacon.getId());
+                    startActivity(intent);
+                    return true;
+                    //intent = BeaconPagerActivity.newIntent(getActivity(), beacon.getId());
+                    //startActivity(intent);
+
+
+                    //Toast.makeText(getActivity(), "Showing current location", Toast.LENGTH_SHORT).show();
 
                 } else {
                     requestPermissions(LOCATION_PERMISSIONS,
                             REQUEST_LOCATION_PERMISSIONS);
+                    return super.onOptionsItemSelected(item);
                 }
-
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     private void getDeviceLocation() {
+        Log.d(TAG, "getDeviceLocation");
+
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         try {
@@ -169,10 +177,13 @@ public class LocatorFragment extends SupportMapFragment {
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
+        Log.d(TAG, "moveCamera");
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private boolean hasLocationPermission() {
+        Log.d(TAG, "hasLocationPermission");
         int result = ContextCompat
                 .checkSelfPermission(getActivity(), LOCATION_PERMISSIONS[0]);
         return result == PackageManager.PERMISSION_GRANTED;
