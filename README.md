@@ -10,6 +10,6 @@ This repository includes the following folders and files:
 
 - src - source code for the project
 - man - user's manual and installation instructions
-- con - conceptual work and mockups used for development
+- cpt - conceptual work and mockups used for development
 - doc - supporting documentation for the project, including our final report
 - README - the file you are currently reading
