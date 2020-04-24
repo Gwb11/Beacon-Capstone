@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Beacon</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="drop_beacon">Drop Beacon</string>
+    <string name="action_settings">Setting</string>
+    <string name="search">Find a beacon near you</string>
+    <string name="beacon_title_label">Your Beacon</string>
+    <string name="beacon_details_label">Beacon Details</string>
+    <string name="beacon_visited_label">Beacon visited</string>
+    <string name="delete_beacon">Delete Beacon</string>
+
+
+</resources>
